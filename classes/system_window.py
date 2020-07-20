@@ -45,4 +45,9 @@ class SystemWindow(QWidget):
         self.main_layout.addLayout(self.first_row_layout)
         self.main_layout.addLayout(self.second_row_layout)
 
+        self.start_button.clicked.connect(self.ispisi)
 
+    def ispisi(self):
+        speed = str(self.throttle_slider.value()) + " Km/h"
+        self.speed_label.setText(speed)
+        self.rpm_label.setText("1000 RPM")

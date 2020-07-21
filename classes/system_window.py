@@ -3,10 +3,13 @@ from PySide2.QtCore import *
 from PySide2.QtGui import *
 import sys
 import os
+import threading
 
 class SystemWindow(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
+
+        self.status = True
 
         self.main_layout = QVBoxLayout(self)
 
@@ -45,9 +48,26 @@ class SystemWindow(QWidget):
         self.main_layout.addLayout(self.first_row_layout)
         self.main_layout.addLayout(self.second_row_layout)
 
-        self.start_button.clicked.connect(self.ispisi)
+        self.x = threading.Thread(target=self.ispisi)
+        self.start_button.clicked.connect(self.x.start)
+
+        self.stop_button.clicked.connect(self.change_status)
+
+
 
     def ispisi(self):
-        speed = str(self.throttle_slider.value()) + " Km/h"
-        self.speed_label.setText(speed)
-        self.rpm_label.setText("1000 RPM")
+        # speed = str(self.throttle_slider.value()) + " Km/h"
+        # self.speed_label.setText(speed)
+        # self.rpm_label.setText("1000 RPM")'
+
+        while self.status == True:
+            speed = str(self.throttle_slider.value()) + " Km/h"
+            self.speed_label.setText(speed)
+            self.rpm_label.setText("1000 RPM")
+
+    def change_status(self):
+        print("Pozdrav iz niti")
+
+        self.status = False
+        
+        

@@ -9,7 +9,7 @@ class SystemWindow(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.status = True
+        self.status = False
 
         self.main_layout = QVBoxLayout(self)
 
@@ -48,26 +48,48 @@ class SystemWindow(QWidget):
         self.main_layout.addLayout(self.first_row_layout)
         self.main_layout.addLayout(self.second_row_layout)
 
-        self.x = threading.Thread(target=self.ispisi)
-        self.start_button.clicked.connect(self.x.start)
+        self.start_button.clicked.connect(self.thread_init)
 
-        self.stop_button.clicked.connect(self.change_status)
+        self.stop_button.clicked.connect(self.process_stop)
+        self.stop_button.setDisabled(True)
 
+    def thread_init(self):
+        print("generisem niti")
 
+        self.status = True
+        x = threading.Thread(target=self.process_loop)
+        x.start()
 
-    def ispisi(self):
-        # speed = str(self.throttle_slider.value()) + " Km/h"
-        # self.speed_label.setText(speed)
-        # self.rpm_label.setText("1000 RPM")'
+    def process_loop(self):
+        print("pozdrav iz niti")
+
+        self.stop_button.setDisabled(False)
+        self.start_button.setDisabled(True)
+
+        self.status_label.setText("Status: ON")
 
         while self.status == True:
             speed = str(self.throttle_slider.value()) + " Km/h"
             self.speed_label.setText(speed)
             self.rpm_label.setText("1000 RPM")
+            #! TODO dodati funkciju za kalkulaciju svega
 
-    def change_status(self):
-        print("Pozdrav iz niti")
+        self.system_reset()
+        
+
+    def process_stop(self):
+        print("rip nit")
 
         self.status = False
         
+    def system_reset(self):
+        print("reset")
+
+        self.speed_label.setText("000 Km/h")
+        self.rpm_label.setText("0000 RPM")
+        self.gear_label.setText("Gear: N")
+        self.status_label.setText("Status: OFF")
+
+        self.stop_button.setDisabled(True)
+        self.start_button.setDisabled(False)
         

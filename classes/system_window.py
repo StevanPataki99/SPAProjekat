@@ -4,6 +4,7 @@ from PySide2.QtGui import *
 import sys
 import os
 import threading
+import time
 
 class SystemWindow(QWidget):
     def __init__(self, parent):
@@ -38,8 +39,8 @@ class SystemWindow(QWidget):
         self.second_row_layout.addWidget(self.throttle_label)
 
         self.throttle_slider = QSlider(Qt.Horizontal)
-        self.throttle_slider.setMaximum(100)
-        self.throttle_slider.setMinimum(0)
+        self.throttle_slider.setMaximum(70)
+        self.throttle_slider.setMinimum(-30)
         self.second_row_layout.addWidget(self.throttle_slider)
 
         self.status_label = QLabel("Status: OFF", self)
@@ -61,21 +62,52 @@ class SystemWindow(QWidget):
         x.start()
 
     def process_loop(self):
-        print("pozdrav iz niti")
+        print("Uso u nit")
 
+        self.system_start() 
+        speed = 0
+        rpm = 800
+        gear = [1, 2, 3, 4, 5, 6]
+        current_gear = gear[0]
+        while self.status == True:
+            print("Pozdrav iz niti")
+            time.sleep(0.1)
+
+            self.gear_label.setText("Gear: {}".format(current_gear))
+
+            thrrottle = self.throttle_slider.value()
+            if thrrottle >= 0:
+                thrrottle += 1
+                rpm += thrrottle * 1.45
+            elif thrrottle < 0:
+                rpm += thrrottle * 1.45
+            
+            if current_gear == 6:
+                if rpm > 6010:
+                    rpm = 6000
+            elif current_gear == 1:
+                if rpm < 745:
+                    rpm = 750
+            
+            if rpm > 4100 and current_gear != 6:
+                current_gear = gear[current_gear]
+                rpm = 1800
+            elif rpm < 1500 and current_gear != 1:
+                current_gear = gear[current_gear - 2]
+                rpm = 2600
+
+            self.rpm_label.setText(str(int(rpm)) + " RPM")
+
+        self.system_reset()
+        
+    def system_start(self):
         self.stop_button.setDisabled(False)
         self.start_button.setDisabled(True)
 
         self.status_label.setText("Status: ON")
 
-        while self.status == True:
-            speed = str(self.throttle_slider.value()) + " Km/h"
-            self.speed_label.setText(speed)
-            self.rpm_label.setText("1000 RPM")
-            #! TODO dodati funkciju za kalkulaciju svega
-
-        self.system_reset()
-        
+        self.rpm_label.setText("800 RPM")
+        self.speed_label.setText("0 Km/h")
 
     def process_stop(self):
         print("rip nit")

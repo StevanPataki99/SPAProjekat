@@ -55,14 +55,12 @@ class SystemWindow(QWidget):
         self.stop_button.setDisabled(True)
 
     def thread_init(self):
-        print("generisem niti")
 
         self.status = True
         x = threading.Thread(target=self.process_loop)
         x.start()
 
     def process_loop(self):
-        print("Uso u nit")
 
         self.system_start() 
         speed = 0
@@ -70,7 +68,6 @@ class SystemWindow(QWidget):
         gear = [1, 2, 3, 4, 5, 6]
         current_gear = gear[0]
         while self.status == True:
-            print("Pozdrav iz niti")
             time.sleep(0.1)
 
             self.gear_label.setText("Gear: {}".format(current_gear))
@@ -122,12 +119,10 @@ class SystemWindow(QWidget):
         self.speed_label.setText("0 Km/h")
 
     def process_stop(self):
-        print("rip nit")
 
         self.status = False
         
     def system_reset(self):
-        print("reset")
 
         self.speed_label.setText("000 Km/h")
         self.rpm_label.setText("0000 RPM")

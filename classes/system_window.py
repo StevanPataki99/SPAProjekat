@@ -96,7 +96,19 @@ class SystemWindow(QWidget):
                 current_gear = gear[current_gear - 2]
                 rpm = 2600
 
+            if thrrottle > 0 and rpm < 6000:
+                print((- (current_gear - 7)))
+                speed += ((- (current_gear - 7)) * (rpm * 0.00015))
+            elif thrrottle < 0:
+                speed -=  0.5
+            
+            if speed < 0:
+                speed = 0
+            if speed > 260:
+                 speed = 260
+
             self.rpm_label.setText(str(int(rpm)) + " RPM")
+            self.speed_label.setText(str(int(speed)) + " Km/h")
 
         self.system_reset()
         
